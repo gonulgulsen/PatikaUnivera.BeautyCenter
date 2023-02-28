@@ -1,3 +1,12 @@
+using BeautyCenter.Data;
+using BeautyCenter.Service.Abstract;
+using BeautyCenter.Service.Concrete;
+
+using BeautyCenter.Data.Abstract;
+using BeautyCenter.Data.Concrete;
+
+using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +15,16 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+builder.Services.AddDbContext<DatabaseContext>();
+builder.Services.AddTransient(typeof(IService<>), typeof(Service<>));
+builder.Services.AddTransient<IProductService, ProductService>(); 
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+
+
+
 
 var app = builder.Build();
 
